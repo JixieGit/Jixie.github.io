@@ -13,12 +13,20 @@
 <body>
     <div class="container">
         <form id="loginForm">
-            <label for="username"><b>Username:</b></label>
-            <input type="text" id="username" placeholder="Enter Username" name="username" required>
+            <label for="username"><b>Username or Email:</b></label>
+            <input type="text" id="username" placeholder="Enter Username or Email" name="username" required>
+
             <label for="password"><b>Password:</b></label>
             <input type="password" id="password" placeholder="Enter Password" name="password" required>
+
             <button id="loginButton">Login</button>
         </form>
     </div>
+
+    <div id="profile">
+        <h2>Welcome, <span id="login"></span>!</h2>
+        <p>First Name: <span id="firstName"></span></p>
+        <p>Last Name: <span id="lastName"></span></p>
+    </div>
 </body>
-</html>
+</html> 
