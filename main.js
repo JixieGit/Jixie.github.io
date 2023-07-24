@@ -1,4 +1,12 @@
+import { showLevel } from './queries.js';
+
+
+
+
+
 const loginButton = document.getElementById('loginButton');
+const url = 'https://01.kood.tech/api/graphql-engine/v1/graphql';
+
 
 if (loginButton) {
     loginButton.addEventListener('click', function (event) {
@@ -16,7 +24,7 @@ if (loginButton) {
 }
 
 
-async function authenticateUser(username, password, isEmailLogin) {
+export async function authenticateUser(username, password, isEmailLogin) {
     const endpoint = 'https://01.kood.tech/api/auth/signin';
     const credentials = btoa(`${username}:${password}`);
 
@@ -30,12 +38,7 @@ async function authenticateUser(username, password, isEmailLogin) {
     };
 
     try {
-        console.log('Before sending the fetch request');
         const response = await fetch(endpoint, options);
-        console.log('After receiving fetch response');
-
-        console.log('API response:', response);
-
         if (!response.ok) {
             console.log('Authorization was impossible, wrong credentials');
             return;
@@ -49,11 +52,9 @@ async function authenticateUser(username, password, isEmailLogin) {
             if (jwtToken && jwtToken !== "") {
                 localStorage.setItem('jwtToken', jwtToken);
                 console.log('JWT Token stored in localStorage.');
-                console.log('Before calling showUserData()');
                 showUserData();
-                
-                console.log('After calling showUserData()');
-            
+
+                showLevel();
             } else {
                 console.log('JWT Token is undefined or empty. It will not be stored in localStorage.');
             }
@@ -65,12 +66,9 @@ async function authenticateUser(username, password, isEmailLogin) {
     }
 }
 
-function showUserData() {
-    console.log('showUserData() function called');
-    const url = 'https://01.kood.tech/api/graphql-engine/v1/graphql';
-    const jwtToken = localStorage.getItem('jwtToken');
-    console.log('JWT Token from localStorage',jwtToken);
 
+export function showUserData() {
+    const jwtToken = localStorage.getItem('jwtToken');
     const query = `query{
             user {
                 firstName
@@ -90,7 +88,6 @@ function showUserData() {
         console.log('Making GraphQL request with options:',options);
     fetch(url, options)
         .then(response => {
-            console.log('GraphQL response:',response);
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
@@ -110,4 +107,5 @@ function showUserData() {
             }
         })
         .catch(error => console.error('Error:', error.message));
+ 
 }
