@@ -14,3 +14,41 @@ header {
     justify-content: center;
     display:flex;
 }
+#profile.profile {
+    margin-top: 20px;
+    padding: 20px;
+    border-radius: 10px;
+    font-family: Arial, sans-serif;
+    color: #000; 
+    text-align: left; 
+  }
+  
+  #profile-item-welcome {
+    font-size: 30px; 
+    font-weight: bold; 
+    margin-bottom: 15px; 
+  }
+  
+  .profile-item {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; 
+    margin-bottom: 15px;
+  }
+  
+  .profile-item span {
+    font-weight: bold;
+    margin-right: 15px;
+  }
+  
+  .profile-item-content {
+    color: #000; 
+  }
+  
+  #level,
+  #totalXP,
+  #auditRatio {
+    font-weight: normal;
+    color: #000; 
+  }
+  

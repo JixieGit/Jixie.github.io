@@ -1,11 +1,9 @@
 import { showLevel } from './queries.js';
-
-
-
-
+import { showProgress, showXPSum } from './queries.js';
 
 const loginButton = document.getElementById('loginButton');
 const url = 'https://01.kood.tech/api/graphql-engine/v1/graphql';
+const jwtToken = localStorage.getItem('jwtToken')
 
 
 if (loginButton) {
@@ -53,8 +51,8 @@ export async function authenticateUser(username, password, isEmailLogin) {
                 localStorage.setItem('jwtToken', jwtToken);
                 console.log('JWT Token stored in localStorage.');
                 showUserData();
-
                 showLevel();
+                showProgress();
             } else {
                 console.log('JWT Token is undefined or empty. It will not be stored in localStorage.');
             }
@@ -69,43 +67,46 @@ export async function authenticateUser(username, password, isEmailLogin) {
 
 export function showUserData() {
     const jwtToken = localStorage.getItem('jwtToken');
-    const query = `query{
-            user {
-                firstName
-                lastName
-                login
-            }
-        }`;
-
+    const query = `query {
+      user {
+        firstName
+        lastName
+        login
+        auditRatio
+      }
+    }`;
+  
     const options = {
-        method: 'POST',
-        headers: {
-            'Authorization': `Bearer ${jwtToken}`,
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ query }),
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${jwtToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ query }),
     };
-        console.log('Making GraphQL request with options:',options);
+  
+    console.log('Making GraphQL request with options:', options);
     fetch(url, options)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log('GraphQL Response:', data);
-            if (data && data.data && Array.isArray(data.data.user) && data.data.user.length > 0) {
-                const { firstName, lastName, login } = data.data.user[0];
-                console.log('User Data:', { firstName, lastName, login });
-
-                document.getElementById('login').textContent = login;
-                document.getElementById('firstName').textContent = firstName;
-                document.getElementById('lastName').textContent = lastName;
-            } else {
-                console.error('User data is missing or undefined in the API response.');
-            }
-        })
-        .catch(error => console.error('Error:', error.message));
- 
-}
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('GraphQL Response:', data);
+        if (data && data.data && Array.isArray(data.data.user) && data.data.user.length > 0) {
+          const { firstName, lastName, login, auditRatio } = data.data.user[0];
+          console.log('User Data:', { firstName, lastName, login, auditRatio });
+  
+          
+          document.getElementById('login').textContent = login;
+          document.getElementById('firstName').textContent = firstName;
+          document.getElementById('lastName').textContent = lastName;
+          document.getElementById('auditRatio').textContent = Number(auditRatio).toFixed(1);
+        } else {
+          console.error('User data is missing or undefined in the API response.');
+        }
+      })
+      .catch(error => console.error('Error:', error.message));
+  }

@@ -23,12 +23,25 @@
         </form>
     </div>
 
-    <div id="profile">
-        <h2>Welcome, <span id="login"></span>!</h2>
-        <p>First Name: <span id="firstName"></span></p>
-        <p>Last Name: <span id="lastName"></span></p>
-        <p>Your current level:  <span id="level"></span></p>
-        <p>Total earned XP: <span id="XP"></span></p>
+    <div id="profile" class="profile">
+        <div class="profile-item">
+            <span>Welcome,</span><span id="login"  class="profile-item-content"></span>!
+        </div>
+        <div class="profile-item">
+            <span>First Name:</span><span id="firstName" class="profile-item-content"></span>
+        </div>
+        <div class="profile-item">
+            <span>Last Name:</span><span id="lastName" class="profile-item-content"></span>
+        </div>
+        <div class="profile-item">
+            <span>Your current level:</span><span id="level" class="profile-item-content"></span>
+        </div>
+        <div class="profile-item">
+            <span>Total earned XP:</span><span id="totalXP" class="profile-item-content"></span>
+        </div>
+        <div class="profile-item">
+            <span>Your audit ratio:</span><span id="auditRatio" class="profile-item-content"></span>
+        </div>
     </div>
     <script type="module" src="main.js"></script>
     <script type="module" src="queries.js"></script>
