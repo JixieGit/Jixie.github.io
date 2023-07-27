@@ -1,11 +1,12 @@
 import { showLevel } from './queries.js';
 import { showProgress, showXPSum } from './queries.js';
+import { renderChart } from './graphs.js';
 
 const loginButton = document.getElementById('loginButton');
 const url = 'https://01.kood.tech/api/graphql-engine/v1/graphql';
 const jwtToken = localStorage.getItem('jwtToken')
-
-
+let userData = null;
+export { userData };
 if (loginButton) {
     loginButton.addEventListener('click', function (event) {
         event.preventDefault();
@@ -50,7 +51,8 @@ export async function authenticateUser(username, password, isEmailLogin) {
             if (jwtToken && jwtToken !== "") {
                 localStorage.setItem('jwtToken', jwtToken);
                 console.log('JWT Token stored in localStorage.');
-                showUserData();
+                await showUserData();
+                renderChart();
                 showLevel();
                 showProgress();
             } else {
@@ -65,7 +67,7 @@ export async function authenticateUser(username, password, isEmailLogin) {
 }
 
 
-export function showUserData() {
+export async function showUserData() {
     const jwtToken = localStorage.getItem('jwtToken');
     const query = `query {
       user {
@@ -73,6 +75,8 @@ export function showUserData() {
         lastName
         login
         auditRatio
+        totalUp
+        totalDown
       }
     }`;
   
@@ -86,24 +90,27 @@ export function showUserData() {
     };
   
     console.log('Making GraphQL request with options:', options);
-    fetch(url, options)
+    return fetch(url, options)
       .then(response => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
         return response.json();
+        
       })
       .then(data => {
         console.log('GraphQL Response:', data);
         if (data && data.data && Array.isArray(data.data.user) && data.data.user.length > 0) {
-          const { firstName, lastName, login, auditRatio } = data.data.user[0];
-          console.log('User Data:', { firstName, lastName, login, auditRatio });
-  
+          const { firstName, lastName, login, auditRatio, totalUp, totalDown } = data.data.user[0];
+          console.log('User Data:', { firstName, lastName, login, auditRatio, totalUp, totalDown });
+
           
           document.getElementById('login').textContent = login;
           document.getElementById('firstName').textContent = firstName;
           document.getElementById('lastName').textContent = lastName;
           document.getElementById('auditRatio').textContent = Number(auditRatio).toFixed(1);
+
+          userData = data.data.user[0];
         } else {
           console.error('User data is missing or undefined in the API response.');
         }

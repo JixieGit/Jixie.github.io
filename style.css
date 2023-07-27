@@ -51,4 +51,13 @@ header {
     font-weight: normal;
     color: #000; 
   }
+  svg {
+    background:white;
+  }
+  rect {
+    
+    stroke-width: 1px;
+    stroke:#fff
+
+  }
   
