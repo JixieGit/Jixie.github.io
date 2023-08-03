@@ -1,6 +1,6 @@
 import { showLevel } from './queries.js';
 import { showProgress, showXPSum } from './queries.js';
-import { renderChart } from './graphs.js';
+import { renderChart, renderLineChart } from './graphs.js';
 
 const loginButton = document.getElementById('loginButton');
 const url = 'https://01.kood.tech/api/graphql-engine/v1/graphql';
@@ -53,6 +53,7 @@ export async function authenticateUser(username, password, isEmailLogin) {
                 console.log('JWT Token stored in localStorage.');
                 await showUserData();
                 renderChart();
+                renderLineChart();
                 showLevel();
                 showProgress();
             } else {
