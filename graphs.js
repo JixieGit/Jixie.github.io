@@ -109,93 +109,103 @@ export async function renderChart() {
     }
 }
 export async function renderLineChart() {
-    await showProgress();
-    console.log("DataForGraph in graphs.js", dataForGraph);
-  
-    const xps = dataForGraph.map((item) => item.xp);
-    const totalXP = xps.reduce((acc, xp) => acc + xp, 0);
-    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    const graphContainer = document.getElementById('lineChart');
-    const graphWidth = 800;
-    const graphHeight = 400;
-    const marginLeft = 50;
-    const marginBottom = 50;
-    const marginTop = 35;
-    const yAxisLabelCount = 4;
-    const maxXP = Math.max(...xps);
-  
-    const yScale = (graphHeight - marginBottom - marginTop) / (maxXP - xps[0]);
-    let path = `<path d="M${marginLeft},${graphHeight - marginBottom} `;
-    let xpResult = 0;
-  
-    for (let i = 0; i < dataForGraph.length; i++) {
-      xpResult += xps[i];
-      console.log(xpResult);
-      const y = graphHeight - marginBottom - (xpResult - xps[0]) * yScale;
-      const x = marginLeft + i * ((graphWidth - marginLeft) / (dataForGraph.length - 1));
-      path += `L${x},${y} `;
-    }
-  
-    path += `" fill="none" fill-opacity="1" stroke="black" stroke-width="2"></path>`;
-    svg.innerHTML = path;
+  await showProgress();
+  console.log("DataForGraph in graphs.js", dataForGraph);
 
-  
-    const xAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    xAxis.setAttribute('x1', marginLeft);
-    xAxis.setAttribute('y1', graphHeight - marginBottom);
-    xAxis.setAttribute('x2', graphWidth);
-    xAxis.setAttribute('y2', graphHeight - marginBottom);
-    xAxis.setAttribute('stroke', 'black');
-    svg.appendChild(xAxis);
-  
-    const yAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    yAxis.setAttribute('x1', marginLeft);
-    yAxis.setAttribute('y1', marginTop);
-    yAxis.setAttribute('x2', marginLeft);
-    yAxis.setAttribute('y2', graphHeight - marginBottom);
-    yAxis.setAttribute('stroke', 'black');
-    svg.appendChild(yAxis);
-  
-    const yAxisLabels = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-    for (let i = 0; i < yAxisLabelCount; i++) {
-      const y = graphHeight - marginBottom - (i / (yAxisLabelCount - 1)) * (graphHeight - marginBottom - marginTop);
-      const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-      label.setAttribute('x', marginLeft - 10);
-      label.setAttribute('y', y);
-      label.setAttribute('fill', '#2D3652');
-      label.setAttribute('font-family', 'Montserrat');
-      label.setAttribute('font-size', '12px');
-      label.setAttribute('text-anchor', 'end');
-      label.setAttribute('alignment-baseline', 'middle');
-      if (i === 0) {
-        label.textContent = '0';
-      } else {
-        label.textContent = (totalXP / 1000 * (i / (yAxisLabelCount - 1))).toFixed();
-      }
-      yAxisLabels.appendChild(label);
-    }
-    svg.appendChild(yAxisLabels);
-  
-    const xAxisLabels = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-    dataForGraph.forEach((element, i) => {
-      const date = new Date(Date.parse(element.updatedAt)).toLocaleString('us-US', {
-        year: 'numeric',
-        month: 'numeric',
-      });
-      const xAxis = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-      xAxis.setAttribute('x', marginLeft + i * ((graphWidth - marginLeft) / dataForGraph.length));
-      xAxis.setAttribute('y', graphHeight - marginBottom + 20);
-      xAxis.setAttribute('fill', '#2D3652');
-      xAxis.setAttribute('font-family', 'Montserrat');
-      xAxis.setAttribute('font-size', '12px');
-      xAxis.setAttribute('text-anchor', 'middle');
-      xAxis.textContent = date;
-      xAxisLabels.appendChild(xAxis);
-    });
-    svg.appendChild(xAxisLabels);
-  
-    svg.setAttribute('width', graphWidth);
-    svg.setAttribute('height', graphHeight);
-    graphContainer.appendChild(svg);
+  const xps = dataForGraph.map((item) => item.xp);
+  const totalXP = xps.reduce((acc, xp) => acc + xp, 0);
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  const graphContainer = document.getElementById('lineChart');
+  const graphWidth = 1000;
+  const graphHeight = 500;
+  const marginLeft = 50;
+  const marginBottom = 50;
+  const marginTop = 35;
+  const yAxisLabelCount = 4;
+  const maxXP = Math.max(...xps);
+  const minXP = xps[0] - Math.min(...xps);
+
+  const yScale = (graphHeight - marginBottom - marginTop) / (maxXP - Math.min(...xps));
+  let path = `<path d="M${marginLeft},${graphHeight - marginBottom} `;
+  let xpResult = 0;
+
+  for (let i = 0; i < dataForGraph.length; i++) {
+    xpResult += xps[i];
+    console.log(xpResult);
+    
+    const y = graphHeight - marginBottom - (xpResult / totalXP) * (graphHeight - marginTop - marginBottom);
+    const x = marginLeft + i * ((graphWidth - marginLeft) / dataForGraph.length);
+    console.log(`Path Log: x:${x}, y:${y}`);
+    path += `L${x},${y} `;
   }
-  
+
+  path += `" fill="none" fill-opacity="1" stroke="black" stroke-width="2"></path>`;
+  svg.innerHTML = path;
+
+
+  const xAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+  xAxis.setAttribute('x1', marginLeft);
+  xAxis.setAttribute('y1', graphHeight - marginBottom);
+  xAxis.setAttribute('x2', graphWidth);
+  xAxis.setAttribute('y2', graphHeight - marginBottom);
+  xAxis.setAttribute('stroke', 'black');
+  svg.appendChild(xAxis);
+
+  const yAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+  yAxis.setAttribute('x1', marginLeft);
+  yAxis.setAttribute('y1', marginTop);
+  yAxis.setAttribute('x2', marginLeft);
+  yAxis.setAttribute('y2', graphHeight - marginBottom);
+  yAxis.setAttribute('stroke', 'black');
+  svg.appendChild(yAxis);
+
+  const yAxisLabels = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  for (let i = 0; i < yAxisLabelCount; i++) {
+    const y = graphHeight - marginBottom - (i / (yAxisLabelCount - 1)) * (graphHeight - marginBottom - marginTop);
+    const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    label.setAttribute('x', marginLeft - 10);
+    label.setAttribute('y', y);
+    label.setAttribute('fill', '#2D3652');
+    label.setAttribute('font-family', 'Montserrat');
+    label.setAttribute('font-size', '12px');
+    label.setAttribute('text-anchor', 'end');
+    label.setAttribute('alignment-baseline', 'middle');
+    if (i === 0) {
+      label.textContent = '0';
+    } else {
+      label.textContent = (totalXP / 1000 * (i / (yAxisLabelCount - 1))).toFixed();
+    }
+    yAxisLabels.appendChild(label);
+  }
+  svg.appendChild(yAxisLabels);
+  const title = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    title.setAttribute('x', graphWidth / 2); 
+    title.setAttribute('y', marginTop / 2); 
+    title.setAttribute('fill', '#2D3652');
+    title.setAttribute('font-family', 'Montserrat');
+    title.setAttribute('font-size', '18px');
+    title.setAttribute('text-anchor', 'middle');
+    title.textContent = 'Your Overall Progress'; 
+    svg.appendChild(title);
+  const xAxisLabels = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  dataForGraph.forEach((element, i) => {
+    const date = new Date(Date.parse(element.updatedAt)).toLocaleString('us-US', {
+      year: 'numeric',
+      month: 'numeric',
+    });
+    const xAxis = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    xAxis.setAttribute('x', marginLeft + i * ((graphWidth - marginLeft) / dataForGraph.length));
+    xAxis.setAttribute('y', graphHeight - marginBottom + 20);
+    xAxis.setAttribute('fill', '#2D3652');
+    xAxis.setAttribute('font-family', 'Montserrat');
+    xAxis.setAttribute('font-size', '12px');
+    xAxis.setAttribute('text-anchor', 'middle');
+    xAxis.textContent = date;
+    xAxisLabels.appendChild(xAxis);
+  });
+  svg.appendChild(xAxisLabels);
+
+  svg.setAttribute('width', graphWidth);
+  svg.setAttribute('height', graphHeight);
+  graphContainer.appendChild(svg);
+}

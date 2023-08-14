@@ -8,6 +8,11 @@ header {
     justify-content: center;
     display:flex;
 }
+.error-message {
+  color: red;
+  font-size: 14px;
+  margin-top: 10px;
+}
 .container {
     font-size: 15px;
     align-items: center;

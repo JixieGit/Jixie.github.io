@@ -11,7 +11,7 @@
     GraphQL
 </header>
 <body>
-    <div class="container">
+    <div id="container" class="container">
         <form id="loginForm">
             <label for="username"><b>Username or Email:</b></label>
             <input type="text" id="username" placeholder="Enter Username or Email" name="username" required>
@@ -21,9 +21,10 @@
 
             <button id="loginButton">Login</button>
         </form>
+        <div id="errorContainer" class="error-message"></div>
     </div>
 
-    <div id="profile" class="profile">
+    <div id="profile" class="profile" style="display: none;">
         <div class="profile-item">
             <span>Welcome,</span><span id="login"  class="profile-item-content"></span>!
         </div>
@@ -41,6 +42,9 @@
         </div>
         <div class="profile-item">
             <span>Your audit ratio:</span><span id="auditRatio" class="profile-item-content"></span>
+        </div>
+        <div class="profile-item">
+            <button id="logoutButton">Logout</button>
         </div>
     </div>
     <div id="barChart"></div>

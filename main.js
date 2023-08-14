@@ -3,6 +3,8 @@ import { showProgress, showXPSum } from './queries.js';
 import { renderChart, renderLineChart } from './graphs.js';
 
 const loginButton = document.getElementById('loginButton');
+const logoutButton = document.getElementById('logoutButton')
+logoutButton.addEventListener('click',logOutUser);
 const url = 'https://01.kood.tech/api/graphql-engine/v1/graphql';
 const jwtToken = localStorage.getItem('jwtToken')
 let userData = null;
@@ -39,6 +41,8 @@ export async function authenticateUser(username, password, isEmailLogin) {
     try {
         const response = await fetch(endpoint, options);
         if (!response.ok) {
+          const errorContainer = document.getElementById('errorContainer');
+          errorContainer.textContent = 'Wrong credentials. Please try again.'
             console.log('Authorization was impossible, wrong credentials');
             return;
         }
@@ -51,6 +55,8 @@ export async function authenticateUser(username, password, isEmailLogin) {
             if (jwtToken && jwtToken !== "") {
                 localStorage.setItem('jwtToken', jwtToken);
                 console.log('JWT Token stored in localStorage.');
+                document.getElementById('profile').style.display = 'block';
+                document.getElementById('container').style.display = 'none';
                 await showUserData();
                 renderChart();
                 renderLineChart();
@@ -66,7 +72,13 @@ export async function authenticateUser(username, password, isEmailLogin) {
         console.error('Error:', error.message);
     }
 }
-
+function logOutUser() {
+  localStorage.removeItem('jwtToken');
+  document.getElementById('profile').style.display = 'none';
+  document.getElementById('container').style.display = 'block';
+  document.getElementById('lineChart').innerHTML = '';
+  document.getElementById('barChart').innerHTML = '';
+}
 
 export async function showUserData() {
     const jwtToken = localStorage.getItem('jwtToken');
